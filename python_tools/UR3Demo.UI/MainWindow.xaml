@@ -1,0 +1,370 @@
+﻿<Window x:Class="UR3Demo.UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="UR3 Demo Control Panel"
+        Height="920"
+        Width="1240"
+        MinHeight="760"
+        MinWidth="1080">
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <Grid Margin="16">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="220"/>
+            </Grid.RowDefinitions>
+
+            <!-- 顶部：连接与基础控制 -->
+            <Border Grid.Row="0"
+                    BorderBrush="#DDD"
+                    BorderThickness="1"
+                    CornerRadius="6"
+                    Padding="12"
+                    Margin="0,0,0,12">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Robot IP:"
+                               VerticalAlignment="Center"
+                               Margin="0,0,8,0"/>
+                    <TextBox x:Name="IpTextBox"
+                             Width="160"
+                             Margin="0,0,12,0"
+                             Text="192.168.1.102"/>
+
+                    <Button x:Name="ConnectButton"
+                            Width="100"
+                            Height="32"
+                            Margin="0,0,8,0"
+                            Content="Connect"
+                            Click="ConnectButton_Click"/>
+
+                    <Button x:Name="DisconnectButton"
+                            Width="100"
+                            Height="32"
+                            Margin="0,0,8,0"
+                            Content="Disconnect"
+                            Click="DisconnectButton_Click"/>
+
+                    <Button x:Name="MoveJButton"
+                            Width="120"
+                            Height="32"
+                            Margin="0,0,8,0"
+                            Content="MoveJ Home"
+                            Click="MoveJButton_Click"/>
+
+                    <Button x:Name="HandEyeCaptureButton"
+                            Width="120"
+                            Height="32"
+                            Margin="0,0,8,0"
+                            Content="Cam Capture" 
+                            Click="OpenHandEyeCapture_Click"/>
+
+                    <Button x:Name="StopButton"
+                            Width="100"
+                            Height="32"
+                            Margin="0,0,16,0"
+                            Content="Stop"
+                            Click="StopButton_Click"/>
+
+                    <TextBlock Text="Status:"
+                               VerticalAlignment="Center"
+                               Margin="0,0,8,0"/>
+                    <TextBlock x:Name="StatusTextBlock"
+                               VerticalAlignment="Center"
+                               FontWeight="Bold"
+                               Text="Disconnected"/>
+                </StackPanel>
+            </Border>
+
+            <!-- 主内容区 -->
+            <Grid Grid.Row="1" Margin="0,0,0,12">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.05*"/>
+                    <ColumnDefinition Width="1.55*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- 左侧：机器人状态 -->
+                <Grid Grid.Column="0" Margin="0,0,8,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <GroupBox Grid.Row="0" Header="TCP Pose" Margin="0,0,0,8">
+                        <Grid Margin="12">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock x:Name="Tcp0" Grid.Row="0" Margin="0,2"/>
+                            <TextBlock x:Name="Tcp1" Grid.Row="1" Margin="0,2"/>
+                            <TextBlock x:Name="Tcp2" Grid.Row="2" Margin="0,2"/>
+                            <TextBlock x:Name="Tcp3" Grid.Row="3" Margin="0,2"/>
+                            <TextBlock x:Name="Tcp4" Grid.Row="4" Margin="0,2"/>
+                            <TextBlock x:Name="Tcp5" Grid.Row="5" Margin="0,2"/>
+                        </Grid>
+                    </GroupBox>
+
+                    <GroupBox Grid.Row="1" Header="Joint State">
+                        <Grid Margin="12">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock x:Name="J0" Grid.Row="0" Margin="0,2"/>
+                            <TextBlock x:Name="J1" Grid.Row="1" Margin="0,2"/>
+                            <TextBlock x:Name="J2" Grid.Row="2" Margin="0,2"/>
+                            <TextBlock x:Name="J3" Grid.Row="3" Margin="0,2"/>
+                            <TextBlock x:Name="J4" Grid.Row="4" Margin="0,2"/>
+                            <TextBlock x:Name="J5" Grid.Row="5" Margin="0,2"/>
+                            <TextBlock x:Name="RobotModeText" Grid.Row="6" Margin="0,10,0,2"/>
+                            <TextBlock x:Name="SafetyModeText" Grid.Row="7" Margin="0,2"/>
+                        </Grid>
+                    </GroupBox>
+                </Grid>
+
+                <!-- 右侧：运动控制 -->
+                <Grid Grid.Column="1" Margin="8,0,0,0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Joint Jog -->
+                    <GroupBox Grid.Row="0" Header="Joint Jog" Margin="0,0,0,12">
+                        <Grid Margin="12">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="70"/>
+                                <ColumnDefinition Width="90"/>
+                                <ColumnDefinition Width="90"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="0" Text="J0" VerticalAlignment="Center"/>
+                            <Button Grid.Row="0" Grid.Column="1" Margin="4" Height="32" Content="-" Click="J0Minus_Click"/>
+                            <Button Grid.Row="0" Grid.Column="2" Margin="4" Height="32" Content="+" Click="J0Plus_Click"/>
+                            <TextBlock Grid.Row="0" Grid.Column="3" Margin="8,0,0,0" VerticalAlignment="Center" Text="Base"/>
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" Text="J1" VerticalAlignment="Center"/>
+                            <Button Grid.Row="1" Grid.Column="1" Margin="4" Height="32" Content="-" Click="J1Minus_Click"/>
+                            <Button Grid.Row="1" Grid.Column="2" Margin="4" Height="32" Content="+" Click="J1Plus_Click"/>
+                            <TextBlock Grid.Row="1" Grid.Column="3" Margin="8,0,0,0" VerticalAlignment="Center" Text="Shoulder"/>
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" Text="J2" VerticalAlignment="Center"/>
+                            <Button Grid.Row="2" Grid.Column="1" Margin="4" Height="32" Content="-" Click="J2Minus_Click"/>
+                            <Button Grid.Row="2" Grid.Column="2" Margin="4" Height="32" Content="+" Click="J2Plus_Click"/>
+                            <TextBlock Grid.Row="2" Grid.Column="3" Margin="8,0,0,0" VerticalAlignment="Center" Text="Elbow"/>
+
+                            <TextBlock Grid.Row="3" Grid.Column="0" Text="J3" VerticalAlignment="Center"/>
+                            <Button Grid.Row="3" Grid.Column="1" Margin="4" Height="32" Content="-" Click="J3Minus_Click"/>
+                            <Button Grid.Row="3" Grid.Column="2" Margin="4" Height="32" Content="+" Click="J3Plus_Click"/>
+                            <TextBlock Grid.Row="3" Grid.Column="3" Margin="8,0,0,0" VerticalAlignment="Center" Text="Wrist1"/>
+
+                            <TextBlock Grid.Row="4" Grid.Column="0" Text="J4" VerticalAlignment="Center"/>
+                            <Button Grid.Row="4" Grid.Column="1" Margin="4" Height="32" Content="-" Click="J4Minus_Click"/>
+                            <Button Grid.Row="4" Grid.Column="2" Margin="4" Height="32" Content="+" Click="J4Plus_Click"/>
+                            <TextBlock Grid.Row="4" Grid.Column="3" Margin="8,0,0,0" VerticalAlignment="Center" Text="Wrist2"/>
+
+                            <TextBlock Grid.Row="5" Grid.Column="0" Text="J5" VerticalAlignment="Center"/>
+                            <Button Grid.Row="5" Grid.Column="1" Margin="4" Height="32" Content="-" Click="J5Minus_Click"/>
+                            <Button Grid.Row="5" Grid.Column="2" Margin="4" Height="32" Content="+" Click="J5Plus_Click"/>
+                            <TextBlock Grid.Row="5" Grid.Column="3" Margin="8,0,0,0" VerticalAlignment="Center" Text="Wrist3"/>
+
+                            <StackPanel Grid.Row="6"
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="4"
+                                        Orientation="Horizontal"
+                                        Margin="0,10,0,0">
+                                <TextBlock Text="Joint Step (deg):"
+                                           VerticalAlignment="Center"
+                                           Margin="0,0,8,0"/>
+                                <TextBox x:Name="JointStepTextBox"
+                                         Width="100"
+                                         Text="5"/>
+                            </StackPanel>
+                        </Grid>
+                    </GroupBox>
+
+                    <!-- TCP Position Jog -->
+                    <GroupBox Grid.Row="1" Header="TCP Position Jog" Margin="0,0,0,12">
+                        <Grid Margin="12">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <Grid Grid.Row="0" HorizontalAlignment="Left">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="70"/>
+                                    <RowDefinition Height="70"/>
+                                    <RowDefinition Height="70"/>
+                                    <RowDefinition Height="70"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="90"/>
+                                    <ColumnDefinition Width="90"/>
+                                    <ColumnDefinition Width="90"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Button Grid.Row="0" Grid.Column="1" Margin="6" Content="Y+" Click="MoveLeft_Click"/>
+                                <Button Grid.Row="1" Grid.Column="0" Margin="6" Content="X-" Click="MoveBack_Click"/>
+                                <Button Grid.Row="1" Grid.Column="1" Margin="6" Content="Z+" Click="MoveUp_Click"/>
+                                <Button Grid.Row="1" Grid.Column="2" Margin="6" Content="X+" Click="MoveForward_Click"/>
+                                <Button Grid.Row="2" Grid.Column="1" Margin="6" Content="Y-" Click="MoveRight_Click"/>
+                                <Button Grid.Row="3" Grid.Column="1" Margin="6" Content="Z-" Click="MoveDown_Click"/>
+                            </Grid>
+
+                            <StackPanel Grid.Row="1"
+                                        Orientation="Horizontal"
+                                        Margin="0,12,0,0">
+                                <TextBlock Text="TCP Pos Step (mm):"
+                                           VerticalAlignment="Center"
+                                           Margin="0,0,8,0"/>
+                                <TextBox x:Name="TcpStepTextBox"
+                                         Width="100"
+                                         Text="5"/>
+                            </StackPanel>
+                        </Grid>
+                    </GroupBox>
+
+                    <!-- TCP Rotation Jog -->
+                    <GroupBox Grid.Row="2" Header="TCP Rotation Jog" Margin="0,0,0,12">
+                        <Grid Margin="12">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="80"/>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="100"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Text="Rx"/>
+                            <Button Grid.Row="0" Grid.Column="1" Margin="4" Height="32" Content="Rx -" Click="RxMinus_Click"/>
+                            <Button Grid.Row="0" Grid.Column="2" Margin="4" Height="32" Content="Rx +" Click="RxPlus_Click"/>
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Text="Ry"/>
+                            <Button Grid.Row="1" Grid.Column="1" Margin="4" Height="32" Content="Ry -" Click="RyMinus_Click"/>
+                            <Button Grid.Row="1" Grid.Column="2" Margin="4" Height="32" Content="Ry +" Click="RyPlus_Click"/>
+
+                            <TextBlock Grid.Row="2" Grid.Column="0" VerticalAlignment="Center" Text="Rz"/>
+                            <Button Grid.Row="2" Grid.Column="1" Margin="4" Height="32" Content="Rz -" Click="RzMinus_Click"/>
+                            <Button Grid.Row="2" Grid.Column="2" Margin="4" Height="32" Content="Rz +" Click="RzPlus_Click"/>
+
+                            <StackPanel Grid.Row="3"
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="3"
+                                        Orientation="Horizontal"
+                                        Margin="0,10,0,0">
+                                <TextBlock Text="TCP Rot Step (deg):"
+                                           VerticalAlignment="Center"
+                                           Margin="0,0,8,0"/>
+                                <TextBox x:Name="RotStepTextBox"
+                                         Width="100"
+                                         Text="5"/>
+                            </StackPanel>
+                        </Grid>
+                    </GroupBox>
+
+                    <!-- Target Pose Move -->
+                    <GroupBox Grid.Row="3" Header="Target Pose Move">
+                        <Grid Margin="12">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="70"/>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="70"/>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="70"/>
+                                <ColumnDefinition Width="120"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Text="X"/>
+                            <TextBox x:Name="TargetXTextBox" Grid.Row="0" Grid.Column="1" Margin="4" Text="0"/>
+
+                            <TextBlock Grid.Row="0" Grid.Column="2" VerticalAlignment="Center" Text="Y"/>
+                            <TextBox x:Name="TargetYTextBox" Grid.Row="0" Grid.Column="3" Margin="4" Text="0"/>
+
+                            <TextBlock Grid.Row="0" Grid.Column="4" VerticalAlignment="Center" Text="Z"/>
+                            <TextBox x:Name="TargetZTextBox" Grid.Row="0" Grid.Column="5" Margin="4" Text="0"/>
+
+                            <TextBlock Grid.Row="1" Grid.Column="0" VerticalAlignment="Center" Text="Rx"/>
+                            <TextBox x:Name="TargetRxTextBox" Grid.Row="1" Grid.Column="1" Margin="4" Text="0"/>
+
+                            <TextBlock Grid.Row="1" Grid.Column="2" VerticalAlignment="Center" Text="Ry"/>
+                            <TextBox x:Name="TargetRyTextBox" Grid.Row="1" Grid.Column="3" Margin="4" Text="0"/>
+
+                            <TextBlock Grid.Row="1" Grid.Column="4" VerticalAlignment="Center" Text="Rz"/>
+                            <TextBox x:Name="TargetRzTextBox" Grid.Row="1" Grid.Column="5" Margin="4" Text="0"/>
+
+                            <StackPanel Grid.Row="2"
+                                        Grid.Column="0"
+                                        Grid.ColumnSpan="6"
+                                        Orientation="Horizontal"
+                                        Margin="0,12,0,0">
+                                <Button Width="140"
+                                        Height="34"
+                                        Margin="0,0,8,0"
+                                        Content="Use Current Pose"
+                                        Click="UseCurrentPose_Click"/>
+                                <Button Width="150"
+                                        Height="34"
+                                        Margin="0,0,8,0"
+                                        Content="MoveL To Target"
+                                        Click="MoveToTargetPose_Click"/>
+                            </StackPanel>
+
+                            <TextBlock Grid.Row="3"
+                                       Grid.Column="0"
+                                       Grid.ColumnSpan="6"
+                                       Margin="0,12,0,0"
+                                       Foreground="Gray"
+                                       Text="Target pose format: [x,y,z,rx,ry,rz], position in meters, rotation in radians."/>
+                        </Grid>
+                    </GroupBox>
+                </Grid>
+            </Grid>
+
+            <!-- 底部日志区域 -->
+            <GroupBox Grid.Row="2" Header="Log Panel (placeholder)">
+                <Grid Margin="12">
+                    <TextBox x:Name="LogTextBox"
+                             IsReadOnly="True"
+                             AcceptsReturn="True"
+                             VerticalScrollBarVisibility="Auto"
+                             TextWrapping="Wrap"
+                             Text="Log panel reserved. We will bind file log or runtime log later."/>
+                </Grid>
+            </GroupBox>
+        </Grid>
+    </ScrollViewer>
+</Window>

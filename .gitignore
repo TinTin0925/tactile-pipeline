@@ -1,0 +1,37 @@
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Large/local data
+data/
+picture/
+session*/
+runs/
+*.ply
+*.f3d
+*.stl
+*.npz
+*.npy
+
+# Generated reports/transforms
+T_base_board*.json
+T_cad_to_base*.json
+
+# .NET build outputs
+bin/
+obj/
+**/bin/
+**/obj/
+*.log
+
+# IDE / OS
+.vs/
+.vscode/
+Thumbs.db
+Desktop.ini
+
+# Keep source project files under python_tools, but ignore generated output there.
+python_tools/**/bin/
+python_tools/**/obj/
+python_tools/**/__pycache__/
