@@ -1,4 +1,4 @@
-# Step5 交互式对齐 CAD 和 Pi3 点云
+# Step5 Debug 交互式对齐 CAD 和 Pi3 点云
 
 对应代码：
 
@@ -8,7 +8,7 @@ step5_interactive_align_cad_pi3.py
 
 ## 作用
 
-这一步用于手动对齐 STL/CAD 模型和 Pi3 点云。界面中会显示 Pi3 点云和红色 CAD 点云，可以通过滑条调节：
+这一步用于调试 STL/CAD 模型和 Pi3 点云之间的偏差来源。界面中会显示 Pi3 点云和红色 CAD 点云，可以通过滑条调节：
 
 ```text
 RX / RY / RZ
@@ -32,6 +32,12 @@ cd E:\research\FYP\2026FYP\src\tactile_pipeline
   --translation-range-mm 150
 ```
 
+默认 `TX/TY/TZ` 平移范围是正负 300 mm。如果还不够，可以继续加大：
+
+```powershell
+--translation-range-mm 500
+```
+
 ## 输出
 
 点击 `Save Transform` 后会保存：
@@ -48,4 +54,14 @@ interactive_combined_cloud_cad.ply
 
 ## 后续
 
-保存的 `T_cad_to_pi3_manual.json` 会在 Step6 中用于正式误差计算。
+保存的 `T_cad_to_pi3_manual.json` 可以临时给 Step6 使用，但它不建议作为最终实验真值。正式实验应优先使用：
+
+```text
+step5_build_cad_pose_in_base.py
+```
+
+生成的：
+
+```text
+cad_pose_in_base\T_cad_to_base.json
+```

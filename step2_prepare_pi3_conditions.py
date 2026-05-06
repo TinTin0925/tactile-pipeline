@@ -9,14 +9,8 @@ from typing import Any
 import cv2
 import numpy as np
 
-from vggt_step_common import (
-    DEFAULT_CALIB_DIR,
-    DEFAULT_HAND_EYE,
-    DEFAULT_POLARIS_JSONL,
-    DEFAULT_RUNS_DIR,
-    DEFAULT_SOURCE_DIR,
-    count_image_files,
-)
+from vggt_step_common import DEFAULT_RUNS_DIR, count_image_files
+import run_pi3_session as _cfg
 
 
 IMAGE_EXTS = {".png", ".jpg", ".jpeg", ".bmp", ".tif", ".tiff"}
@@ -32,19 +26,19 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Step 2A: prepare Pi3X images and condition_robot_poses_intrinsics.npz."
     )
-    parser.add_argument("--source-dir", type=Path, default=DEFAULT_SOURCE_DIR)
-    parser.add_argument("--samples-jsonl", type=Path, default=DEFAULT_POLARIS_JSONL)
-    parser.add_argument("--hand-eye", type=Path, default=DEFAULT_HAND_EYE)
+    parser.add_argument("--source-dir", type=Path, default=_cfg.SOURCE_DIR)
+    parser.add_argument("--samples-jsonl", type=Path, default=_cfg.SAMPLES_JSONL)
+    parser.add_argument("--hand-eye", type=Path, default=_cfg.HAND_EYE)
     parser.add_argument("--hand-eye-key", default="T_tool_camera")
-    parser.add_argument("--calib", type=Path, default=DEFAULT_CALIB_DIR / "camera_calibration.npz")
+    parser.add_argument("--calib", type=Path, default=_cfg.CALIB)
     parser.add_argument("--out-dir", type=Path, default=None)
-    parser.add_argument("--num-frames", type=int, default=None)
+    parser.add_argument("--num-frames", type=int, default=_cfg.NUM_FRAMES)
     parser.add_argument("--all-frames", action="store_true")
-    parser.add_argument("--start-index", type=int, default=0)
-    parser.add_argument("--frame-stride", type=int, default=1)
+    parser.add_argument("--start-index", type=int, default=_cfg.START_INDEX)
+    parser.add_argument("--frame-stride", type=int, default=_cfg.FRAME_STRIDE)
     parser.add_argument("--pose-translation-scale", type=float, default=1.0)
-    parser.add_argument("--undistort", action=argparse.BooleanOptionalAction, default=True)
-    parser.add_argument("--undistort-alpha", type=float, default=0.1)
+    parser.add_argument("--undistort", action=argparse.BooleanOptionalAction, default=_cfg.UNDISTORT)
+    parser.add_argument("--undistort-alpha", type=float, default=_cfg.UNDISTORT_ALPHA)
     return parser.parse_args()
 
 

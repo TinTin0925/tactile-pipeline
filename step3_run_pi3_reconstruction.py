@@ -6,56 +6,51 @@ import subprocess
 import sys
 from pathlib import Path
 
-from vggt_step_common import (
-    DEFAULT_CALIB_DIR,
-    DEFAULT_HAND_EYE,
-    DEFAULT_POLARIS_JSONL,
-    DEFAULT_SOURCE_DIR,
-    count_image_files,
-)
+from vggt_step_common import count_image_files
 from step2_prepare_pi3_conditions import default_pi3_out_dir, prepare_pi3_conditions
+import run_pi3_session as _cfg
 
 
-DEFAULT_PI3_ROOT = Path(r"E:\research\FYP\5.4\Pi3")
-DEFAULT_PI3_PYTHON = Path(r"E:\research\FYP\vggt_env\Scripts\python.exe")
+DEFAULT_PI3_ROOT = _cfg.PI3_ROOT
+DEFAULT_PI3_PYTHON = _cfg.PI3_PYTHON
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
         description="Step 3: run Pi3X reconstruction with robot-pose conditions."
     )
-    parser.add_argument("--source-dir", type=Path, default=DEFAULT_SOURCE_DIR)
-    parser.add_argument("--samples-jsonl", type=Path, default=DEFAULT_POLARIS_JSONL)
-    parser.add_argument("--hand-eye", type=Path, default=DEFAULT_HAND_EYE)
+    parser.add_argument("--source-dir", type=Path, default=_cfg.SOURCE_DIR)
+    parser.add_argument("--samples-jsonl", type=Path, default=_cfg.SAMPLES_JSONL)
+    parser.add_argument("--hand-eye", type=Path, default=_cfg.HAND_EYE)
     parser.add_argument("--hand-eye-key", default="T_tool_camera")
-    parser.add_argument("--calib", type=Path, default=DEFAULT_CALIB_DIR / "camera_calibration.npz")
+    parser.add_argument("--calib", type=Path, default=_cfg.CALIB)
     parser.add_argument("--out-dir", type=Path, default=None)
     parser.add_argument("--num-frames", type=int, default=None)
     parser.add_argument("--all-frames", action="store_true")
-    parser.add_argument("--start-index", type=int, default=0)
-    parser.add_argument("--frame-stride", type=int, default=1)
+    parser.add_argument("--start-index", type=int, default=_cfg.START_INDEX)
+    parser.add_argument("--frame-stride", type=int, default=_cfg.FRAME_STRIDE)
     parser.add_argument("--pose-translation-scale", type=float, default=1.0)
-    parser.add_argument("--undistort", action=argparse.BooleanOptionalAction, default=True)
-    parser.add_argument("--undistort-alpha", type=float, default=0.1)
+    parser.add_argument("--undistort", action=argparse.BooleanOptionalAction, default=_cfg.UNDISTORT)
+    parser.add_argument("--undistort-alpha", type=float, default=_cfg.UNDISTORT_ALPHA)
     parser.add_argument("--force-conditions", action="store_true")
 
     parser.add_argument("--pi3-root", type=Path, default=DEFAULT_PI3_ROOT)
     parser.add_argument("--pi3-python", type=Path, default=DEFAULT_PI3_PYTHON)
     parser.add_argument("--pi3-script", type=Path, default=None)
-    parser.add_argument("--device", default="cuda")
+    parser.add_argument("--device", default=_cfg.DEVICE)
     parser.add_argument(
         "--interval",
         type=int,
-        default=None,
+        default=_cfg.INTERVAL,
         help="Pi3 inference interval. Default: 1 for <=20 prepared frames, otherwise 2 for 8GB GPU safety.",
     )
-    parser.add_argument("--conf-min", type=float, default=0.45)
-    parser.add_argument("--max-points", type=int, default=500000)
+    parser.add_argument("--conf-min", type=float, default=_cfg.CONF_MIN)
+    parser.add_argument("--max-points", type=int, default=_cfg.MAX_POINTS)
     parser.add_argument("--filter-depth", action=argparse.BooleanOptionalAction, default=True)
-    parser.add_argument("--depth-min", type=float, default=0.02)
-    parser.add_argument("--depth-max", type=float, default=0.55)
+    parser.add_argument("--depth-min", type=float, default=_cfg.DEPTH_MIN)
+    parser.add_argument("--depth-max", type=float, default=_cfg.DEPTH_MAX)
     parser.add_argument("--filter-distance", action=argparse.BooleanOptionalAction, default=True)
-    parser.add_argument("--distance-max", type=float, default=0.60)
+    parser.add_argument("--distance-max", type=float, default=_cfg.DISTANCE_MAX)
     parser.add_argument("--filter-mode", choices=["any", "first", "all"], default="any")
     parser.add_argument("--align-to-condition-pose", action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument("--align-allow-scale", action=argparse.BooleanOptionalAction, default=True)

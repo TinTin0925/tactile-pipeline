@@ -38,7 +38,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--tx-mm", type=float, default=0.0)
     parser.add_argument("--ty-mm", type=float, default=0.0)
     parser.add_argument("--tz-mm", type=float, default=0.0)
-    parser.add_argument("--translation-range-mm", type=float, default=80.0)
+    parser.add_argument("--translation-range-mm", type=float, default=300.0)
     parser.add_argument("--point-size", type=float, default=2.0)
     return parser.parse_args()
 
